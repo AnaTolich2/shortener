@@ -1,0 +1,32 @@
+version: "3"
+
+tasks:
+  redis:
+    desc: "Поднять только Redis (для локальной разработки и интеграционных тестов)"
+    cmds:
+      - docker compose up -d redis
+
+  up:
+    desc: "Поднять Redis и сервис в Docker"
+    cmds:
+      - docker compose up --build -d
+
+  down:
+    desc: "Остановить всё и удалить контейнеры"
+    cmds:
+      - docker compose down -v --remove-orphans
+
+  run:
+    desc: "Запустить сервис локально (нужен запущенный Redis: task redis)"
+    cmds:
+      - go run ./cmd/app
+
+  test:
+    desc: "Все тесты с race detector (тесты Redis пропускаются, если он не запущен)"
+    cmds:
+      - go test -race -count=1 ./...
+
+  vet:
+    desc: "Статический анализ"
+    cmds:
+      - go vet ./...
